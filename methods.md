@@ -1,9 +1,8 @@
-
-# ONT reads
+# Prepare ONT reads
 
 Tools used:
 * [Dorado](https://github.com/nanoporetech/dorado) v0.7.3
-* Samtools
+* [Samtools](https://github.com/samtools) v1.21
 
 Basecall (on Spartan):
 ```bash
@@ -82,35 +81,11 @@ Move to Roosta:
 mkdir ~/2024-08_SNP_calling_from_assemblies
 cd ~/2024-08_SNP_calling_from_assemblies
 
-mkdir RES22-01837
-mkdir RES22-01838
-mkdir RES22-01839
-mkdir RES22-01840
-mkdir RES22-01841
-mkdir RES22-01842
-mkdir RES22-01843
-mkdir RES22-01844
-mkdir RES22-01845
-
-mkdir RES22-01837/reads
-mkdir RES22-01838/reads
-mkdir RES22-01839/reads
-mkdir RES22-01840/reads
-mkdir RES22-01841/reads
-mkdir RES22-01842/reads
-mkdir RES22-01843/reads
-mkdir RES22-01844/reads
-mkdir RES22-01845/reads
-
-mkdir RES22-01837/reads_qc
-mkdir RES22-01838/reads_qc
-mkdir RES22-01839/reads_qc
-mkdir RES22-01840/reads_qc
-mkdir RES22-01841/reads_qc
-mkdir RES22-01842/reads_qc
-mkdir RES22-01843/reads_qc
-mkdir RES22-01844/reads_qc
-mkdir RES22-01845/reads_qc
+for s in RES22-01837 RES22-01838 RES22-01839 RES22-01840 RES22-01841 RES22-01842 RES22-01843 RES22-01844 RES22-01845; do
+    mkdir "$s"
+    mkdir "$s"/reads
+    mkdir "$s"/reads_qc
+done
 
 cd ~/2024-08_SNP_calling_from_assemblies/RES22-01837/reads
 scp spartan:/data/scratch/projects/punim1894/O2024-060/reads/barcode81_pass.fastq.gz nanopore.fastq.gz
@@ -142,8 +117,7 @@ scp spartan:/data/scratch/projects/punim1894/O2024-060/reads/barcode89_pass.fast
 
 
 
-
-# Illumina reads
+# Prepare Illumina reads
 
 ```bash
 cd ~/2024-08_SNP_calling_from_assemblies/RES22-01837/reads
@@ -188,7 +162,6 @@ chmod 664 RES*/reads/*.fastq.gz
 
 
 
-
 # Read QC
 
 Tools used:
@@ -208,7 +181,6 @@ for s in RES*; do
     filtlong --min_length 1000 ../reads/nanopore.fastq.gz | pigz -p8 > nanopore.fastq.gz
 done
 ```
-
 
 
 
@@ -247,29 +219,29 @@ Note: I'm probably not going to use these Unicycler assemblies in making my refe
 
 
 
-
 # Reference assemblies
 
 Tools used:
 * [Canu](https://github.com/marbl/canu) v2.2
 * [Flye](https://github.com/mikolmogorov/Flye) v2.9.5
-* miniasm
-* Minipolish
-* Racon
-* any2fasta
-* NECAT
-* NextDenovo
-* NextPolish
+* [miniasm](https://github.com/lh3/miniasm) v0.3
+* [Minipolish](https://github.com/rrwick/Minipolish) v0.1.3
+* [Racon](https://github.com/lbcb-sci/racon) v1.5.0
+* [any2fasta](https://github.com/tseemann/any2fasta) v0.4.2
+* [NECAT](https://github.com/xiaochuanle/NECAT) v20200803
+* [NextDenovo](https://github.com/Nextomics/NextDenovo) v2.5.2
+* [NextPolish](https://github.com/Nextomics/NextPolish) v1.4.1
 * [Raven](https://github.com/lbcb-sci/raven) v1.8.3
 * [Trycycler](https://github.com/rrwick/Trycycler) v0.5.5
 * [Polypolish](https://github.com/rrwick/Polypolish) v0.6.0
 * [Pypolca](https://github.com/gbouras13/pypolca) v0.3.1
 * [Dnaapler](https://github.com/gbouras13/dnaapler) v0.8.1
-* Sniffles
-* Seqtk
-* Samtools
+* [Sniffles](https://github.com/fritzsedlazeck/Sniffles) v2.4
+* [Seqtk](https://github.com/lh3/seqtk) v1.4
+* [Samtools](https://github.com/samtools) v1.21
+* [Bcftools](https://github.com/samtools/bcftools) v1.21
 
-Generate input assemblies using [extra-thorough method](https://github.com/rrwick/Trycycler/wiki/Generating-assemblies#extra-thorough-assembly):
+Generate input assemblies using [Trycycler's extra-thorough method](https://github.com/rrwick/Trycycler/wiki/Generating-assemblies#extra-thorough-assembly):
 ```bash
 genome_size=2880000
 
@@ -460,7 +432,6 @@ done
 
 
 
-
 # Read subsampling
 
 Tools used:
@@ -491,7 +462,6 @@ pigz -p16 RES*/reads_subsampled/*.fastq
 
 
 
-
 # Unicycler (short-read) assembly
 
 Tools used:
@@ -515,9 +485,9 @@ done
 
 
 
-
 # Shovill (short-read) assembly
 
+Tools used:
 * [Shovill](https://github.com/tseemann/shovill) v1.1.0
 * [SPAdes](https://github.com/ablab/spades) v4.0.0
 
@@ -538,9 +508,9 @@ done
 
 
 
-
 # SKESA (short-read) assembly
 
+Tools used:
 * [SKESA](https://github.com/ncbi/SKESA) v2.5.1
 
 ```bash
@@ -557,9 +527,9 @@ done
 
 
 
-
 # Flye (long-read) assembly
 
+Tools used:
 * [Flye](https://github.com/mikolmogorov/Flye) v2.9.5
 
 ```bash
@@ -578,9 +548,9 @@ done
 
 
 
-
 # Canu (long-read) assembly
 
+Tools used:
 * [Canu](https://github.com/marbl/canu) v2.2
 
 ```bash
@@ -599,9 +569,9 @@ done
 
 
 
-
 # Raven (long-read) assembly
 
+Tools used:
 * [Raven](https://github.com/lbcb-sci/raven) v1.8.3
 
 ```bash
@@ -619,10 +589,10 @@ done
 
 
 
-
 # Medaka
 
-I ran Medaka on each of the long-read-only assemblies.
+Tools used:
+* [Medaka](https://github.com/nanoporetech/medaka)  v2.0.0
 
 ```bash
 conda activate medaka
@@ -641,7 +611,6 @@ for s in RES*; do
     done
 done
 ```
-
 
 
 
@@ -669,7 +638,6 @@ done
 
 
 
-
 # Hybracter (hybrid) assembly
 
 Tools used:
@@ -693,8 +661,6 @@ done
 
 
 
-
-
 # Prepare reference
 
 I'm using RES22-01844 as the reference since it's the NRS384 wild type genome.
@@ -708,15 +674,14 @@ bwa index ref.fasta
 
 
 
-
-
 # Call SNPs from ONT reads
 
 Tools used:
 * [Clair3](https://github.com/HKU-BAL/Clair3) v1.0.10
+* [Bcftools](https://github.com/samtools/bcftools) v1.21
 
 Notes:
-* I based my Clair3 command using what Michael used [here](https://github.com/mbhall88/NanoVarBench/blob/main/workflow/scripts/callers/clair3.sh).
+* I based my Clair3 command on what Michael used [here](https://github.com/mbhall88/NanoVarBench/blob/main/workflow/scripts/callers/clair3.sh).
 * I only take variants with a `FILTER` value of `PASS` and I exclude any het calls (genotype of `0/1`). That second check shouldn't be necessary with Clair3 in haploid mode, but I noticed a strange behaviour: if no variants are found, it copies an earlier file to final results, which still includes the het calls.
 
 ```bash
@@ -740,13 +705,13 @@ done
 
 
 
-
 # Call SNPs from Illumina reads
 
 Tools used:
+* [BWA](https://github.com/lh3/bwa) v0.7.18
 * [Freebayes](https://github.com/freebayes/freebayes) v1.3.8
-* Samtools v1.21
-* BWA v0.7.18
+* [Samtools](https://github.com/samtools) v1.21
+* [Bcftools](https://github.com/samtools/bcftools) v1.21
 
 Notes:
 * I based my `freebayes` command using what Michael used [here](https://github.com/mbhall88/NanoVarBench/blob/main/workflow/scripts/callers/freebayes.sh).
@@ -773,10 +738,12 @@ done
 
 
 
-
 # Create VCFs from assemblies
 
-When I first used all2vcf to convert from MUMmer's `.snp` file to a `.vcf`, I encountered some errors with indels. I therefore had to fix the tool (see [this pull request](https://github.com/MatteoSchiavinato/all2vcf/pull/7)), and this code uses my fixed all2vcf.
+Tools used:
+* [all2vcf](https://github.com/rrwick/all2vcf) v0.7.8
+
+When I first used all2vcf to convert from MUMmer's `.snp` file to a `.vcf`, I encountered some errors with indels. I therefore had to fix the tool (see [this pull request](https://github.com/MatteoSchiavinato/all2vcf/pull/7)), and this code used my fixed all2vcf.
 
 Using my reference assemblies:
 ```bash
@@ -812,12 +779,11 @@ done
 
 
 
-
-
-
-
-
 # Create whole-genome MSAs
+
+Tools used:
+* [Bcftools](https://github.com/samtools/bcftools) v1.21
+* [Trycycler](https://github.com/rrwick/Trycycler) v0.5.5
 
 ```bash
 cd ~/2024-08_SNP_calling_from_assemblies
@@ -850,7 +816,7 @@ for d in 020 050 100; do
 done
 ```
 
-Using Nanopore reads:
+Using ONT reads:
 ```bash
 conda activate trycycler
 
@@ -931,27 +897,6 @@ gunzip RES*/*.vcf.gz
 
 
 
-
-# Build tree
-
-Tools used:
-* [IQ-TREE](https://github.com/iqtree/iqtree2) v2.3.6
-
-```bash
-conda activate iqtree
-
-cd ~/2024-08_SNP_calling_from_assemblies/alignments
-../scripts/drop_invariant_sites_and_count_diffs.py reference_direct.fasta > reference_direct_no_invariant.fasta
-
-# Manually replace gaps with a base (A) so IQ-TREE uses them:
-cat reference_direct_no_invariant.fasta | sed 's/-/A/g' | sed 's/2A0/2-0/' > reference_direct_no_invariant_bases_for_gaps.fasta
-
-iqtree2 -s reference_direct_no_invariant_bases_for_gaps.fasta --polytomy
-```
-
-
-
-
 # Establishing truth
 
 ```bash
@@ -964,7 +909,7 @@ The following methods all produced the exact same alignments:
 * Illumina 20x
 * Illumina 50x
 * Illumina 100x
-* Nanopore 100x
+* ONT 100x
 * Hybracter 20x (shred, MUMmer)
 * Hybracter 50x (shred, MUMmer)
 * Hybracter 100x (shred, MUMmer)
@@ -979,6 +924,28 @@ for s in RES*; do
 done
 ```
 
+
+
+# Build tree
+
+Tools used:
+* [IQ-TREE](https://github.com/iqtree/iqtree2) v2.3.6
+
+I used the alignment based directly on reference assemblies to generate the tree, since this was consistent with my truth variants (see above).
+
+```bash
+conda activate iqtree
+
+cd ~/2024-08_SNP_calling_from_assemblies/alignments
+../scripts/drop_invariant_sites_and_count_diffs.py reference_direct.fasta > reference_direct_no_invariant.fasta
+
+
+
+# Manually replace gaps with a base (A) so IQ-TREE uses them:
+cat reference_direct_no_invariant.fasta | sed 's/-/A/g' | sed 's/2A0/2-0/' > reference_direct_no_invariant_bases_for_gaps.fasta
+
+iqtree2 -s reference_direct_no_invariant_bases_for_gaps.fasta --polytomy
+```
 
 
 
@@ -1107,13 +1074,36 @@ printf "\n"; grep ">" "$s"/"$a"_"$d"x.fasta
 
 
 
-# Tarballing up data for public repo
+# Tarball data for public repo
+
+For the public data, I used the strain names (e.g. IMAL014) instead of the sample names (e.g. RES22-01837).
 
 ```bash
 cd ~/2024-08_SNP_calling_from_assemblies
 mkdir tarballs
 cd tarballs
+mkdir assemblies vcfs
+for s in NRS384_wildtype NRS384_walKT389A IMAL014 IMAL031 IMAL058 IMAL065 IMAL070; do
+    mkdir assemblies/"$s"
+    mkdir vcfs/"$s"
+done
 
+cp ../RES22-01844/*.fasta assemblies/NRS384_wildtype
+cp ../RES22-01845/*.fasta assemblies/NRS384_walKT389A
+cp ../RES22-01837/*.fasta assemblies/IMAL014
+cp ../RES22-01839/*.fasta assemblies/IMAL031
+cp ../RES22-01840/*.fasta assemblies/IMAL058
+cp ../RES22-01841/*.fasta assemblies/IMAL065
+cp ../RES22-01842/*.fasta assemblies/IMAL070
 
+cp ../RES22-01844/*.vcf vcfs/NRS384_wildtype
+cp ../RES22-01845/*.vcf vcfs/NRS384_walKT389A
+cp ../RES22-01837/*.vcf vcfs/IMAL014
+cp ../RES22-01839/*.vcf vcfs/IMAL031
+cp ../RES22-01840/*.vcf vcfs/IMAL058
+cp ../RES22-01841/*.vcf vcfs/IMAL065
+cp ../RES22-01842/*.vcf vcfs/IMAL070
+
+tar -Jcvf vcfs.tar.xz --owner=0 --group=0 vcfs
+tar -Jcvf assemblies.tar.xz --owner=0 --group=0 assemblies
 ```
-
