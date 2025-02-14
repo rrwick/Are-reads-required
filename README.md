@@ -1,7 +1,7 @@
 # Are reads required? High-precision variant calling is possible from bacterial genome assemblies
 
 This repository holds methods, code and data for our manuscript:<br>
-[**Wick RR, Judd LM, Stinear TP, Monk IR. Are reads required? High-precision variant calling is possible from bacterial genome assemblies. bioRxiv. 2024. doi:10.1101/xxxx.xx.xx.xxxxxx.**](https://doi.org/10.1101/xxxx.xx.xx.xxxxxx)
+[**Wick RR, Judd LM, Stinear TP, Monk IR. Are reads required? High-precision variant calling from bacterial genome assemblies. bioRxiv. 2025. doi:10.1101/xxxx.xx.xx.xxxxxx.**](https://doi.org/10.1101/xxxx.xx.xx.xxxxxx)
 
 Contents:
 * `data/`: tarballs of all assemblies and VCFs created in the study
