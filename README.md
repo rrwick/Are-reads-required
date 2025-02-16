@@ -1,4 +1,4 @@
-# Are reads required? High-precision variant calling is possible from bacterial genome assemblies
+# Are reads required? High-precision variant calling from bacterial genome assemblies
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14868870.svg)](https://doi.org/10.5281/zenodo.14868870)
 
