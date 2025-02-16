@@ -7,7 +7,7 @@ This repository holds methods, code and data for our manuscript:<br>
 
 Contents:
 * `data/`: tarballs of all assemblies and VCFs created in the study
-* `figures/`: all main text figures and supplementary figure
+* `figures/`: all main-text and supplementary figures
 * `scripts/`: all custom scripts used in the analysis
 * `methods.md`: all commands run for the analysis
 * `tables.xlsx`: Supplementary tables
