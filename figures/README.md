@@ -1,6 +1,6 @@
 <p align="center"><img src="Figure_1.png" alt="Figure 1" width="70%"/></p>
 
-**Figure 1:** The relationship between the seven S. aureus NRS384 isolates used in this study. **A:** an invariant-free multiple sequence alignment, showing all variants between the isolates, with the 23 SNPs and 2 indels relative to the wild-type (WT) reference in shown bold green and pink, respectively. **B:** the phylogenetic relationship between the isolates, as constructed by IQ-TREE v2.3.6.
+**Figure 1:** The relationship between the seven _S. aureus_ NRS384 isolates used in this study. **A:** an invariant-free multiple sequence alignment, showing all variants between the isolates and the wild-type (WT) reference: 23 SNPs (green) and 2 indels (pink). **B:** the phylogenetic relationship between the isolates, as constructed by IQ-TREE v2.3.6.
 
 
 <br><br><br><br>
@@ -18,13 +18,7 @@
 <br><br><br><br>
 <p align="center"><img src="Figure_S1.png" alt="Figure S1" width="70%"/></p>
 
-**Figure S1:** Phenotypic characterisation of the isolates.
-
-SBA = Sheep blood agar; shows haemolytic activity.
-
-MLA = Micrococcus luteus agar; shows the secretion/activity of one WalR-regulated peptidoglycan hydrolase (Atl).
-
-MHA = Mueller-Hinton agar; shows the colour of the cells. IMAL058 is a SigB mutant, making it more yellow than the other isolates.
+**Figure S1:** Phenotypic characterisation of the isolates. SBA = Sheep blood agar; shows haemolytic activity. MLA = Micrococcus luteus agar; shows the secretion/activity of one WalR-regulated peptidoglycan hydrolase (Atl). MHA = Mueller-Hinton agar; shows the colour of the cells. IMAL058 is a SigB mutant, making it more yellow than the other isolates.
 
 
 <br><br><br><br>
@@ -38,4 +32,4 @@ y-axes have a pseudo-log transformation.
 <br><br><br><br>
 <p align="center"><img src="Figure_S3.png" alt="Figure S3" width="80%"/></p>
 
-**Figure S3:** Variant-calling errors, before and after Medaka polishing, for each of the long-read assembly methods.
+**Figure S3:** Variant-calling errors, before and after Medaka polishing, for each of the long-read assembly methods. Assemblies with missing sequence (particularly the 4.4 kbp plasmid) or duplicated sequence (e.g. start-end overlap of circular contigs) were prone to acquiring errors during Medaka polishing, leading to post-Medaka assemblies having more total errors than pre-Medaka assemblies. See Table S3 and [rrwick.github.io/2024/10/17/medaka-v2.html](https://rrwick.github.io/2024/10/17/medaka-v2.html) for more information.
