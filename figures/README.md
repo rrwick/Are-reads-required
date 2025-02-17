@@ -12,7 +12,7 @@
 <br><br><br><br>
 <p align="center"><img src="Figure_3.png" alt="Figure 3" width="80%"/></p>
 
-**Figure 3:** Variant-calling metrics for both read- and assembly-based variant-calling methods. False negative and false positive errors are shown in the plots. Sensitivity (sens) and precision (prec) are shown above the plots. For each method, the errors were summed across all genomes and read depths (see Figure S2 for the results for each depth separately). The y-axes have a pseudo-log transformation.
+**Figure 3:** Variant-calling errors for both read-based and assembly-based variant-calling methods. For each method, the errors were summed across all genomes and read depths. See Figure S2 for the results for each depth separately and for sensitivity and precision values. The y-axes have a pseudo-log transformation.
 
 
 <br><br><br><br>
@@ -24,9 +24,7 @@
 <br><br><br><br>
 <p align="center"><img src="Figure_S2.png" alt="Figure S2" width="100%"/></p>
 
-**Figure S2:** Variant calling metrics for both read- and assembly-based variant calling methods at each read depth. False
-negative and false positive errors are shown in the plots. Sensitivity (sens) and precision (prec) are shown above the plots. The
-y-axes have a pseudo-log transformation.
+**Figure S2:** Variant calling metrics for both read- and assembly-based variant calling methods at each read depth. False negative and false positive errors are shown in the plots. Sensitivity (sens) and precision (prec) are shown above the plots. The y-axes have a pseudo-log transformation.
 
 
 <br><br><br><br>
