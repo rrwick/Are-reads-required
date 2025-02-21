@@ -6,7 +6,7 @@
 <br><br><br><br>
 <p align="center"><img src="Figure_2.png" alt="Figure 2" width="70%"/></p>
 
-**Figure 2:** Methods for calling variants from assemblies. **A:** The MUMmer method relies on directly aligning the assembly’s contigs to the reference genome, with variants called from these alignments. **B:** The shred method produces synthetic error-free reads from the assembly’s contigs and aligns them to the reference genome, allowing for the use of read-based variant callers such as Freebayes. **C:** The SKA method uses split k-mers to efficiently find SNPs between the assembly’s contigs and reference genome.
+**Figure 2:** Methods for calling variants from assemblies. **A:** The MUMmer method relies on directly aligning the assembly’s contigs to the reference genome, with variants called from these alignments. **B:** The Shred method produces synthetic error-free reads from the assembly’s contigs and aligns them to the reference genome, allowing for the use of read-based variant callers such as Freebayes. **C:** The SKA method uses split k-mers to efficiently find SNPs between the assembly’s contigs and reference genome.
 
 
 <br><br><br><br>
