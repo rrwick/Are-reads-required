@@ -954,7 +954,6 @@ iqtree2 -s reference_direct_no_invariant_bases_for_gaps.fasta --polytomy
 Tools used:
 * [vcfdist](https://github.com/TimD1/vcfdist) v2.5.3
 
-
 Run vcfdist on each VCF against the truth:
 ```bash
 cd ~/2024-08_SNP_calling_from_assemblies
@@ -1071,6 +1070,158 @@ cd ~/2024-08_SNP_calling_from_assemblies/"$s"/"$a"_"$d"x_shred.vcf.vcfdist; prin
 printf "\n"; cd ~/2024-08_SNP_calling_from_assemblies; minimap2 -c -x asm5 ref.fasta "$s"/"$a"_"$d"x.fasta 2> /dev/null
 printf "\n"; grep ">" "$s"/"$a"_"$d"x.fasta
 ```
+
+Check for how much start-end overlap can be found in Medaka-polished contigs:
+```bash
+cd ~/2024-08_SNP_calling_from_assemblies
+for f in RES*/*_medaka_*.fasta; do
+    minimap2 -c -X "$f" "$f" 2> /dev/null | awk '{if ($3 == 0 && $7 == $9) print $4}'
+done | sort -n
+```
+
+
+
+
+# False positive analysis
+
+These commands will create the data for the false positive details supplementary table.
+
+Gather up all false positive positions (0-based indices):
+```bash
+cd ~/2024-08_SNP_calling_from_assemblies
+echo -e "genome\tdepth\tassembly_method\tvariant_call_method\treplicon\tpos\ttype\tref\talt" > false_positives.tsv
+for s in RES22-01837 RES22-01839 RES22-01840 RES22-01841 RES22-01842 RES22-01844 RES22-01845; do
+    for d in 020 050 100; do
+        for a in canu canu_medaka flye flye_medaka hybracter_hybrid raven raven_medaka shovill skesa unicycler_hybrid unicycler_short; do
+            for m in mummer shred ska; do
+                v="$s/${a}_${d}x_${m}.vcf.vcfdist/query.tsv"
+                awk -F'\t' -v prefix="$s\t$d\t$a\t$m" '$8 == "FP" { print prefix "\t" $1 "\t" $2 "\t" $7 "\t"$4 "\t" $5 }' "$v"
+            done
+        done
+    done
+done >> false_positives.tsv
+```
+
+This found 17522 false positives. Note that this doesn't quite match up with the 17518 false positives for the assemblies in my main results (Table S2). This seems to be because the `query.tsv` file that I'm using here considers longer indels to be type 'INS' or 'DEL', while the `precision-recall-summary.tsv` file I used for my main results considers these to be type 'SV' (which I had filtered out). But since this only applies to 4 of the false positives, I'm not concerned with this discrepancy.
+
+And then the same but for true positives:
+```bash
+cd ~/2024-08_SNP_calling_from_assemblies
+echo -e "genome\treplicon\tpos\ttype\tref\talt" > true_positives.tsv
+for s in RES22-01837 RES22-01839 RES22-01840 RES22-01841 RES22-01842 RES22-01844 RES22-01845; do
+    v="$s/illumina_100x.vcf.vcfdist/truth.tsv"
+    grep -v "CONTIG" "$v" | awk -F'\t' -v prefix="$s" '{ print prefix "\t" $1 "\t" $2 "\t" $7 "\t"$4 "\t" $5 }'
+done >> true_positives.tsv
+```
+
+Find repeats and low-complexity regions:
+```bash
+cd ~/2024-08_SNP_calling_from_assemblies
+minimap2 -c -X ref.fasta ref.fasta > ref_vs_ref.paf
+dustmasker -in ref.fasta -outfmt fasta -hard_masking | seqtk seq > ref_dustmasker.fasta
+tantan -x N ref.fasta | seqtk seq > ref_tantan.fasta
+```
+```python
+fasta_lines = open("ref.fasta").readlines()
+chromosome_seq = list(fasta_lines[1].strip())
+plasmid_1_seq = list(fasta_lines[3].strip())
+plasmid_2_seq = list(fasta_lines[5].strip())
+
+ranges = []
+with open("ref_vs_ref.paf", "rt") as f:
+    for line in f:
+        parts = line.strip().split('\t')
+        ranges.append((parts[0], int(parts[2]), int(parts[3])))
+        ranges.append((parts[5], int(parts[7]), int(parts[8])))
+
+for name, start, end in ranges:
+    if name == 'chromosome':
+        for i in range(start, end):
+            chromosome_seq[i] = 'N'
+    elif name == 'plasmid_1':
+        for i in range(start, end):
+            plasmid_1_seq[i] = 'N'
+    elif name == 'plasmid_2':
+        for i in range(start, end):
+            plasmid_2_seq[i] = 'N'
+    else:
+        assert False
+
+with open("ref_minimap2_repeat_masked.fasta", "wt") as f:
+    f.write(f'>chromosome\n{"".join(chromosome_seq)}\n')
+    f.write(f'>plasmid_1\n{"".join(plasmid_1_seq)}\n')
+    f.write(f'>plasmid_2\n{"".join(plasmid_2_seq)}\n')
+```
+
+Get proportion of masked bases:
+```bash
+cd ~/2024-08_SNP_calling_from_assemblies
+cat ref_minimap2_repeat_masked.fasta | grep -o 'N' | wc -l
+cat ref_dustmasker.fasta | grep -o 'N' | wc -l
+cat ref_tantan.fasta | grep -o 'N' | wc -l
+```
+Repeats:    232414 / 2886598 = 8.1%
+Dustmasker:  54601 / 2886598 = 1.9%
+tantan:     101841 / 2886598 = 3.5%
+
+```python
+def load_fasta(filename):
+    seqs = {}
+    with open(filename, "rt") as f:
+        for header in f:
+            seqs[header[1:].split()[0] ] = f.readline().strip()
+    return seqs
+
+repeats = load_fasta("ref_minimap2_repeat_masked.fasta")
+dustmasker = load_fasta("ref_dustmasker.fasta")
+tantan = load_fasta("ref_tantan.fasta")
+
+# with open("true_positives.tsv") as f_in, open("true_positives_with_mask.tsv", "w") as f_out:
+with open("false_positives.tsv") as f_in, open("false_positives_with_mask.tsv", "w") as f_out:
+    header = f_in.readline().rstrip("\n")
+    f_out.write(header + "\tin_repeat\tin_dustmasker\tin_tantan\n")
+    for line in f_in:
+        line = line.rstrip("\n")
+        cols = line.split("\t")
+        # replicon, pos = cols[1], int(cols[2])  # for true_positives.tsv
+        replicon, pos = cols[4], int(cols[5])  # for false_positives.tsv
+        in_repeat = 1 if repeats[replicon][pos] == "N" else 0
+        in_dustmasker = 1 if dustmasker[replicon][pos] == "N" else 0
+        in_tantan = 1 if tantan[replicon][pos] == "N" else 0
+        f_out.write(f"{line}\t{in_repeat}\t{in_dustmasker}\t{in_tantan}\n")
+```
+
+Note that for these genomes, none of the true variants are located in repeat regions, so masking could improve precision without reducing sensitivity. But in other scenarios where there are true variants in repeats, masking could reduce sensitivity.
+
+
+
+
+# Annotate references
+
+To double check that the differences between references (shown in Figure 2A) are where I expect them to be, I'll do an annotation of each.
+
+Tools used:
+* [Bakta](https://github.com/oschwengers/bakta) v1.11
+
+```bash
+conda activate bakta
+
+cd ~/2024-08_SNP_calling_from_assemblies
+for s in RES22-01837 RES22-01839 RES22-01840 RES22-01841 RES22-01842 RES22-01844 RES22-01845; do
+    cd ~/2024-08_SNP_calling_from_assemblies/"$s"
+    mkdir bakta; cd bakta
+    bakta --threads 16 --prefix reference ../reference.fasta
+done
+```
+
+As expected, these two differences between RES22-01844 and RES22-01845:
+```
+26272-26304: TCACATGAGTTACGTACACCTTTAACTTCTATG
+26272-26304: TCACATGAGTTACGTGCTCCTTTAACTTCTATG
+                            * *
+```
+Are in the walK gene, and create the delibrate `T`>`A` mutation. I asked Ian why they use two SNPs instead of one (`ACA`>`GCA` would also create `T`>`A`), and he said it's because single SNPs are more likely to revert than double SNPs.
+
 
 
 
